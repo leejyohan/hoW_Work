@@ -12,6 +12,7 @@ struct hoW_WorkApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            //test
         }
     }
 }
