@@ -7,13 +7,19 @@
 
 import SwiftUI
 
+//View 시각적 요소 정의
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, hoW_Work")
+        NavigationStack{
+            VStack { //하위 뷰를 수직 정렬 HStack(수평정렬)
+                Text("Hello, hoW_Work")
+                
+                NavigationLink("next"){
+                    SecondView()
+                }
+
+                //수정
+            }
         }
         .padding()
     }
