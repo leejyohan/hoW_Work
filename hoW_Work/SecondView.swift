@@ -15,12 +15,18 @@ struct Event: Identifiable {
     
 }
 
+struct Rate {
+    var hourlyRate: Double
+    var tax: Double
+}
+
 struct SecondView: View {
     @State private var startTime = Date()
     @State private var endTime: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
     @State private var selectedDate = Date()
     @State private var eveTitle: String = ""
     @State private var events: [Event] = []
+    
     
     var body: some View {
         NavigationView {
@@ -64,18 +70,35 @@ struct SecondView: View {
                 Divider()
                 
                 List(events) { event in
+                    
+                    let fullDateString = String(describing: formattedDate(event.endTime))
+                    let timeOnly = fullDateString.components(separatedBy: " ").last ?? ""
+                    
+                    
                     VStack(alignment: .leading) {
                         Text(event.title)
                             .font(.headline)
-                        Text(formattedDate(event.startTime))
+                        Text(formattedDate(event.startTime)+"-"+timeOnly)
                             .font(.subheadline)
-                        Text(formattedDate(event.endTime))
+                        Text("근무시간: \(timeDif(from: event.startTime, to: event.endTime))")
+                        }
                     }
                     
-                }
             }
         }
     }
+    
+
+    //시간계산 함수
+    func timeDif (from start:Date, to end:Date) -> String{
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .full
+        let interval = end.timeIntervalSince(start)
+        return formatter.string(from: interval) ?? "잘못입력하셨습니다"
+    
+    }
+    
     
     func combine(date: Date, time: Date) -> Date {
             let calendar = Calendar.current
@@ -98,6 +121,7 @@ struct SecondView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+    
 }
 
 #Preview {
