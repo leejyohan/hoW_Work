@@ -27,9 +27,7 @@ struct SecondView: View {
     @State private var eveTitle: String = ""
     @State private var events: [Event] = []
     
-    
     var body: some View {
-        NavigationView {
             VStack {
                 DatePicker(
                     "Sel Date",
@@ -37,6 +35,7 @@ struct SecondView: View {
                     displayedComponents: [.date]//날짜,시간
                 )
                 .datePickerStyle(.graphical)
+
                 
                 DatePicker(
                     "Start Date",
@@ -55,7 +54,7 @@ struct SecondView: View {
                 TextField("Event Title", text: $eveTitle)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
-
+                
                 
                 Button(action: {
                     let startTime = combine(date: selectedDate, time: startTime)
@@ -65,7 +64,10 @@ struct SecondView: View {
                     eveTitle = ""
                 }) {
                     Text("Add Event")
-                    }
+                    Spacer()
+                }
+                
+                .padding()
                 
                 Divider()
                 
@@ -74,19 +76,20 @@ struct SecondView: View {
                     let fullDateString = String(describing: formattedDate(event.endTime))
                     let timeOnly = fullDateString.components(separatedBy: " ").last ?? ""
                     
-                    
                     VStack(alignment: .leading) {
                         Text(event.title)
                             .font(.headline)
                         Text(formattedDate(event.startTime)+"-"+timeOnly)
                             .font(.subheadline)
                         Text("근무시간: \(timeDif(from: event.startTime, to: event.endTime))")
-                        }
+                        Text("급여:\(Int(salDif(from: event.startTime, to: event.endTime)))원")
                     }
-                    
+                    .padding()
+                }
             }
         }
     }
+    
     
 
     //시간계산 함수
@@ -95,8 +98,17 @@ struct SecondView: View {
         formatter.allowedUnits = [.hour, .minute]
         formatter.unitsStyle = .full
         let interval = end.timeIntervalSince(start)
+        print(interval)
         return formatter.string(from: interval) ?? "잘못입력하셨습니다"
-    
+    }
+
+func salDif(from start:Date, to end:Date)->Double{
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .full
+        let interval = end.timeIntervalSince(start)
+        let sal = (interval/3600)*10300
+        return sal
     }
     
     
@@ -121,8 +133,6 @@ struct SecondView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
-    
-}
 
 #Preview {
     
